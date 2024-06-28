@@ -1,5 +1,5 @@
 import os
-
+import toml
 import click
 
 from cli.commands.edit import edit
@@ -14,6 +14,10 @@ from cli.commands.chat import chat
 from cli.constants import DEFAULT_MODEL, CONFIG_API_KEY
 from cli.util import load_config
 
+# Load version from pyproject.toml
+with open(os.path.join(os.path.dirname(__file__), '..', 'pyproject.toml')) as f:
+    pyproject = toml.load(f)
+    version = pyproject['tool']['poetry']['version']
 
 @click.group()
 @click.option(
@@ -45,6 +49,7 @@ from cli.util import load_config
     help="Run task on your current branch and pull PR Pilots changes when done.",
 )
 @click.option("--debug", is_flag=True, default=False, help="Display debug information.")
+@click.version_option(version)
 @click.pass_context
 def main(ctx, wait, repo, spinner, verbose, model, branch, sync, debug):
     """PR Pilot CLI - https://docs.pr-pilot.ai
@@ -91,7 +96,7 @@ main.add_command(upgrade)
 main.add_command(chat)
 
 run_command_help = """
-🚀 Run a saved command.
+\ud83d\ude80 Run a saved command.
 
 Create new commands by using the --save-command flag when running a task.
 """
